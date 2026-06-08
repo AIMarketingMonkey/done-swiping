@@ -77,7 +77,7 @@ export default function ClientComponent({
   };
 
   // Wait until we know whether there is a conversation to resume before
-  // mounting the VoiceProvider (so resumedChatGroupId is correct at connect).
+  // mounting the call UI (so resumedChatGroupId is correct at connect time).
   if (!memoryReady) {
     return (
       <div
@@ -95,7 +95,6 @@ export default function ClientComponent({
       }
     >
       <VoiceProvider
-        resumedChatGroupId={resumedChatGroupId}
         onMessage={(message) => {
           // Capture the chat group id from chat metadata to enable resume.
           if (
@@ -125,7 +124,11 @@ export default function ClientComponent({
       >
         <Messages ref={ref} />
         <Controls />
-        <StartCall configId={configId} accessToken={accessToken} />
+        <StartCall
+          configId={configId}
+          accessToken={accessToken}
+          resumedChatGroupId={resumedChatGroupId}
+        />
       </VoiceProvider>
     </div>
   );
