@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* One More Try — warm romantic palette */
+  /* Done Swiping — warm romantic palette */
   --background: oklch(0.99 0.006 60);
   --foreground: oklch(0.18 0.04 270);
   --card: oklch(1 0 0);
@@ -174,4 +174,38 @@
   background: linear-gradient(90deg, oklch(0.94 0 0) 25%, oklch(0.97 0 0) 50%, oklch(0.94 0 0) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* Two-thumb range slider — remove default track, style thumb only */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: oklch(0.6 0.16 22);
+  border: 2.5px solid white;
+  box-shadow: 0 1px 6px oklch(0.6 0.16 22 / 0.4);
+  pointer-events: all;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: oklch(0.6 0.16 22);
+  border: 2.5px solid white;
+  box-shadow: 0 1px 6px oklch(0.6 0.16 22 / 0.4);
+  pointer-events: all;
+  cursor: pointer;
 }

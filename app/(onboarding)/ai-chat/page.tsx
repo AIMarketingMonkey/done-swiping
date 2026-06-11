@@ -24,7 +24,7 @@ const SAGE_INTRO: Message = {
   id: "sage-intro",
   role: "assistant",
   content:
-    "Hi! I'm Sage — your AI dating coach here at One More Try. 💛\n\nI'm going to ask you a few genuine questions so we can build a profile that truly represents who you are and what you're looking for. There are no right or wrong answers — just be yourself.\n\nLet's start with something simple: what's a small, everyday thing that makes you genuinely happy?",
+    "Hi! I'm Sage — your AI dating coach here at Done Swiping. 💛\n\nI'm going to ask you a few genuine questions so we can build a profile that truly represents who you are and what you're looking for. There are no right or wrong answers — just be yourself.\n\nLet's start with something simple: what's a small, everyday thing that makes you genuinely happy?",
   createdAt: new Date(),
 };
 
