@@ -1,260 +1,157 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { Heart, Camera, Sparkles } from "lucide-react";
+import { useState, useEffect } from 'react'
+import { Heart, Filter, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+type FilterTab = 'all' | 'new' | 'saved'
 
-type FilterTab = "All" | "New" | "Saved";
-
-interface MatchItem {
-  id: string;
-  name: string;
-  age: number;
-  compatibility: number;
-  compatibilityNote: string;
-  photoUrl?: string;
-  isNew?: boolean;
-  isSaved?: boolean;
+interface Match {
+  id: string
+  name: string
+  age: number
+  compatibility: number
+  compatibilityNote: string
+  isNew?: boolean
+  isSaved?: boolean
+  photoColor?: string
 }
 
-// ---------------------------------------------------------------------------
-// Skeleton
-// ---------------------------------------------------------------------------
-
-function CardSkeleton() {
-  return (
-    <div className="rounded-2xl overflow-hidden border border-border bg-card">
-      <div className="skeleton aspect-[3/4] w-full" />
-      <div className="p-2.5 space-y-1.5">
-        <div className="skeleton h-3.5 w-20 rounded" />
-        <div className="skeleton h-3 w-full rounded" />
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Match card
-// ---------------------------------------------------------------------------
-
-function MatchCard({ match, onTap }: { match: MatchItem; onTap: () => void }) {
-  const badgeColor =
-    match.compatibility >= 85
-      ? "oklch(0.6 0.16 22)"
-      : match.compatibility >= 70
-      ? "oklch(0.65 0.14 40)"
-      : "oklch(0.65 0.12 60)";
-
-  return (
-    <article
-      className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer"
-      onClick={onTap}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && onTap()}
-      aria-label={`View ${match.name}'s profile`}
-    >
-      {/* Photo */}
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-muted to-border overflow-hidden">
-        {match.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={match.photoUrl}
-            alt={match.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Camera
-              className="w-8 h-8"
-              style={{ color: "var(--muted-foreground)" }}
-            />
-          </div>
-        )}
-        {/* Top badges */}
-        <div className="absolute top-2 left-2 right-2 flex items-start justify-between">
-          {match.isNew && (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white bg-primary shadow">
-              NEW
-            </span>
-          )}
-          <span
-            className="ml-auto px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow"
-            style={{ background: badgeColor }}
-          >
-            {match.compatibility}%
-          </span>
-        </div>
-        {/* Name overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2.5 pt-6">
-          <p className="text-white font-semibold text-sm">
-            {match.name}, {match.age}
-          </p>
-        </div>
-      </div>
-
-      {/* Note */}
-      <div className="px-2.5 py-2">
-        <p
-          className="text-[11px] font-medium line-clamp-1 flex items-center gap-1"
-          style={{ color: "var(--primary)" }}
-        >
-          <Sparkles className="w-3 h-3 flex-shrink-0" aria-hidden />
-          {match.compatibilityNote}
-        </p>
-      </div>
-    </article>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Empty state
-// ---------------------------------------------------------------------------
-
-function EmptyState({ filter }: { filter: FilterTab }) {
-  const messages: Record<FilterTab, { title: string; body: string }> = {
-    All: {
-      title: "No matches yet",
-      body: "Complete your profile to start receiving curated matches.",
-    },
-    New: {
-      title: "No new matches",
-      body: "Check back tomorrow — new matches are curated daily.",
-    },
-    Saved: {
-      title: "Nothing saved yet",
-      body: "Tap the heart icon on a match card to save them for later.",
-    },
-  };
-  const msg = messages[filter];
-
-  return (
-    <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
-      <div
-        className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
-        style={{ background: "oklch(0.6 0.16 22 / 0.1)" }}
-      >
-        <Heart
-          className="w-8 h-8"
-          style={{ color: "var(--primary)" }}
-          aria-hidden
-        />
-      </div>
-      <p className="font-semibold text-foreground text-base">{msg.title}</p>
-      <p className="text-sm text-muted-foreground mt-1.5 max-w-xs">{msg.body}</p>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Page
-// ---------------------------------------------------------------------------
+const mockMatches: Match[] = [
+  { id: '1', name: 'Sarah', age: 42, compatibility: 94, compatibilityNote: 'Shared love of outdoors', isNew: true, photoColor: 'from-rose-200 to-pink-300' },
+  { id: '2', name: 'Michael', age: 48, compatibility: 88, compatibilityNote: 'Creative souls align', photoColor: 'from-amber-200 to-orange-300' },
+  { id: '3', name: 'Elena', age: 39, compatibility: 91, compatibilityNote: 'Mindful living values', isNew: true, photoColor: 'from-purple-200 to-violet-300' },
+  { id: '4', name: 'David', age: 45, compatibility: 85, compatibilityNote: 'Family-first mindset', isSaved: true, photoColor: 'from-blue-200 to-cyan-300' },
+  { id: '5', name: 'Maria', age: 41, compatibility: 89, compatibilityNote: 'Adventure & curiosity', isSaved: true, photoColor: 'from-green-200 to-emerald-300' },
+  { id: '6', name: 'James', age: 52, compatibility: 82, compatibilityNote: 'Deep conversations', photoColor: 'from-indigo-200 to-purple-300' },
+]
 
 export default function MatchesPage() {
-  const router = useRouter();
-  const [filter, setFilter] = useState<FilterTab>("All");
-  const [matches, setMatches] = useState<MatchItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchMatches = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/matches");
-      if (!res.ok) throw new Error("Failed to load matches");
-      const data = await res.json();
-      setMatches(data.matches ?? []);
-    } catch (err) {
-      setError("Could not load matches. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [activeTab, setActiveTab] = useState<FilterTab>('all')
+  const [matches, setMatches] = useState<Match[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchMatches();
-  }, [fetchMatches]);
+    // Simulate API call
+    const fetchMatches = async () => {
+      try {
+        setLoading(true)
+        // const res = await fetch('/api/matches')
+        // const data = await res.json()
+        await new Promise(r => setTimeout(r, 600))
+        setMatches(mockMatches)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchMatches()
+  }, [])
 
-  const filtered = matches.filter((m) => {
-    if (filter === "New") return m.isNew;
-    if (filter === "Saved") return m.isSaved;
-    return true;
-  });
+  const filtered = matches.filter(m => {
+    if (activeTab === 'new') return m.isNew
+    if (activeTab === 'saved') return m.isSaved
+    return true
+  })
 
-  const tabs: FilterTab[] = ["All", "New", "Saved"];
+  const tabs: { key: FilterTab; label: string; count?: number }[] = [
+    { key: 'all', label: 'All', count: matches.length },
+    { key: 'new', label: 'New', count: matches.filter(m => m.isNew).length },
+    { key: 'saved', label: 'Saved', count: matches.filter(m => m.isSaved).length },
+  ]
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="mb-5">
-        <h1 className="text-2xl font-bold text-foreground">Your Matches</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">
-          Curated just for you by AI
-        </p>
-      </header>
-
-      {/* Filter tabs */}
-      <div className="flex gap-2 mb-5" role="tablist" aria-label="Filter matches">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            role="tab"
-            aria-selected={filter === tab}
-            onClick={() => setFilter(tab)}
-            className="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-            style={
-              filter === tab
-                ? {
-                    background: "var(--primary)",
-                    color: "var(--primary-foreground)",
-                  }
-                : {
-                    background: "var(--muted)",
-                    color: "var(--muted-foreground)",
-                  }
-            }
-          >
-            {tab}
+      <div className="bg-white px-5 pt-12 pb-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Heart size={22} className="text-primary fill-primary" />
+            Your Matches
+          </h1>
+          <button className="p-2 rounded-full bg-gray-100 text-gray-500">
+            <Filter size={18} />
           </button>
-        ))}
+        </div>
+
+        {/* Filter tabs */}
+        <div className="flex gap-2 mt-4">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
+                activeTab === tab.key
+                  ? 'bg-primary text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-500'
+              }`}
+            >
+              {tab.label}
+              {tab.count !== undefined && tab.count > 0 && (
+                <span className={`ml-1.5 text-xs ${activeTab === tab.key ? 'text-white/80' : 'text-gray-400'}`}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Content */}
-      {loading ? (
-        <div className="grid grid-cols-2 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="text-center py-16">
-          <p className="text-sm text-muted-foreground">{error}</p>
-          <button
-            onClick={fetchMatches}
-            className="mt-3 text-sm font-medium"
-            style={{ color: "var(--primary)" }}
-          >
-            Retry
-          </button>
-        </div>
-      ) : filtered.length === 0 ? (
-        <EmptyState filter={filter} />
-      ) : (
-        <div className="grid grid-cols-2 gap-3">
-          {filtered.map((match) => (
-            <MatchCard
-              key={match.id}
-              match={match}
-              onTap={() => router.push(`/matches/${match.id}`)}
-            />
-          ))}
-        </div>
-      )}
+      <div className="px-4 py-5">
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
+                <div className="h-40 bg-gray-200" />
+                <div className="p-3 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="bg-rose-50 rounded-full p-6 mb-4">
+              <Heart size={40} className="text-primary/40" />
+            </div>
+            <h3 className="font-bold text-gray-700 text-lg mb-2">No matches here yet</h3>
+            <p className="text-gray-500 text-sm max-w-[200px]">
+              {activeTab === 'new' ? 'Check back soon for new matches!' : 'Save matches to find them here.'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.map(match => (
+              <Link key={match.id} href={`/matches/${match.id}`}>
+                <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 active:scale-95 transition-transform">
+                  {/* Photo */}
+                  <div className={`h-40 bg-gradient-to-br ${match.photoColor || 'from-rose-200 to-pink-300'} flex items-center justify-center relative`}>
+                    <span className="text-5xl font-bold text-white/80">{match.name[0]}</span>
+                    {match.isNew && (
+                      <span className="absolute top-2 right-2 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  {/* Info */}
+                  <div className="p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-gray-900 text-sm">{match.name}, {match.age}</span>
+                    </div>
+                    <span className="inline-block bg-rose-50 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full border border-rose-100 mb-1.5">
+                      {match.compatibility}% match
+                    </span>
+                    <p className="text-[11px] text-gray-500 flex items-center gap-1">
+                      <Sparkles size={10} className="text-primary shrink-0" />
+                      {match.compatibilityNote}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
