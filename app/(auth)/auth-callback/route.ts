@@ -71,6 +71,6 @@ export async function GET(request: NextRequest) {
   const onboardingDone = userRow?.onboarding_completed === true;
 
   return NextResponse.redirect(
-    new URL(onboardingDone ? "/home" : "/welcome", origin)
+    new URL(onboardingDone ? "/home" : "/chat", origin)
   );
 }

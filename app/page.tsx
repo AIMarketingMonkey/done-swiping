@@ -118,7 +118,7 @@ export default function LandingPage() {
                 color: "white",
               }}
             >
-              <Link href="/login">Sign in</Link>
+              <Link href="/login">Sign in / Sign up</Link>
             </Button>
           </div>
         </div>

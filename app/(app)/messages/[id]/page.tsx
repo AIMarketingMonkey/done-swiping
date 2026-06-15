@@ -49,7 +49,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
     load()
   }, [conversationId])
 
-  // Real-time subscription
+  // Real-time subscription for new messages
   useEffect(() => {
     const channel = supabase
       .channel(`messages:${conversationId}`)
@@ -109,12 +109,13 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
   const otherPhoto = otherUser?.profile_photos?.find(p => p.is_primary)?.image_url
     ?? otherUser?.profile_photos?.[0]?.image_url
 
+  // h-[calc(100dvh-4rem)] accounts for the 4rem (64px) fixed bottom nav
   return (
-    <div className="app-shell flex flex-col h-dvh">
+    <div className="app-shell flex flex-col h-[calc(100dvh-4rem)]">
       {/* Header */}
-      <header className="flex items-center gap-3 px-4 py-3 border-b border-border bg-white shrink-0 pt-safe">
-        <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors">
-          <ArrowLeft className="w-5 h-5" />
+      <header className="flex items-center gap-3 px-4 py-3 pt-12 border-b border-gray-100 bg-white shrink-0">
+        <button onClick={() => router.back()} className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </button>
         {otherPhoto ? (
           <img src={otherPhoto} alt={otherUser?.name} className="w-10 h-10 rounded-full object-cover" />
@@ -124,21 +125,21 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
           </div>
         )}
         <div className="flex-1">
-          <h2 className="font-semibold text-foreground">{otherUser?.name ?? 'Your match'}</h2>
+          <h2 className="font-semibold text-gray-900">{otherUser?.name ?? 'Your match'}</h2>
         </div>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50">
         {loading ? (
-          <div className="text-center text-muted-foreground text-sm py-8">Loading messages...</div>
+          <div className="text-center text-gray-400 text-sm py-8">Loading messages...</div>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
               <Sparkles className="w-8 h-8 text-primary" />
             </div>
-            <p className="text-muted-foreground text-sm mb-4">
-              You matched! Break the ice with a genuine first message.
+            <p className="text-gray-500 text-sm mb-4 max-w-[240px] mx-auto leading-relaxed">
+              You matched — no photos yet, just a genuine conversation. Break the ice.
             </p>
             <button
               onClick={suggestOpener}
@@ -146,7 +147,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
               className="flex items-center gap-2 px-4 py-2.5 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors mx-auto disabled:opacity-60"
             >
               <Sparkles className="w-4 h-4" />
-              {suggestionLoading ? 'Thinking...' : 'Get an AI opener'}
+              {suggestionLoading ? 'Thinking...' : 'Suggest an opener'}
             </button>
           </div>
         ) : (
@@ -156,7 +157,7 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
               <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] ${isMe ? 'chat-bubble-user' : 'chat-bubble-ai'} px-4 py-2.5`}>
                   <p className="text-sm leading-relaxed">{msg.message_text}</p>
-                  <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-muted-foreground'}`}>
+                  <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-gray-400'}`}>
                     {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true })}
                   </p>
                 </div>
@@ -167,15 +168,15 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
-      <div className="shrink-0 px-4 py-3 border-t border-border bg-white pb-safe">
+      {/* Input bar */}
+      <div className="shrink-0 px-4 py-3 border-t border-gray-100 bg-white">
         <div className="flex items-end gap-2">
           {messages.length === 0 && (
             <button
               onClick={suggestOpener}
               disabled={suggestionLoading}
               className="p-2.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-60 shrink-0"
-              title="AI message suggestion"
+              title="Suggest a message"
             >
               <Sparkles className="w-5 h-5" />
             </button>
@@ -189,13 +190,13 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
             }}
             placeholder="Write a message..."
             rows={1}
-            className="flex-1 bg-muted rounded-2xl px-4 py-2.5 text-sm resize-none outline-none focus:ring-2 focus:ring-primary/30 max-h-32"
+            className="flex-1 bg-gray-100 rounded-2xl px-4 py-2.5 text-sm resize-none outline-none focus:ring-2 focus:ring-primary/30 max-h-32"
             style={{ minHeight: '44px' }}
           />
           <button
             onClick={sendMessage}
             disabled={!input.trim() || sending}
-            className="p-2.5 rounded-full bg-primary text-primary-foreground disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
+            className="p-2.5 rounded-full bg-primary text-white disabled:opacity-40 hover:opacity-90 transition-opacity shrink-0"
           >
             <Send className="w-5 h-5" />
           </button>

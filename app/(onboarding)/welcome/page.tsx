@@ -32,7 +32,7 @@ const AHEAD_STEPS = [
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function WelcomePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },

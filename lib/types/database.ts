@@ -2,6 +2,10 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 
 export interface Database {
   public: {
+    Views: Record<string, { Row: Record<string, unknown> }>
+    Functions: Record<string, { Args: Record<string, unknown>; Returns: unknown }>
+    Enums: Record<string, string>
+    CompositeTypes: Record<string, unknown>
     Tables: {
       users: {
         Row: {
@@ -95,12 +99,15 @@ export interface Database {
           values: string[]
           lifestyle_tags: string[]
           relationship_goal: string | null
+          relationship_structure: string | null
           communication_style: string | null
           deal_breakers: string[]
           preferred_partner_traits: string[]
           emotional_readiness: string | null
           attachment_notes: string | null
+          love_languages: string[] | null
           sexual_compatibility_notes: string | null
+          partner_awareness: string | null
           matching_summary: string | null
           updated_at: string
         }

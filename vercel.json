@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "functions": {
+    "app/api/ai/extract-profile/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/ai/realtime/session/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

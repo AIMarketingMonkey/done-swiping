@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { Heart, Sparkles, ArrowRight, Camera } from 'lucide-react'
+import { Heart, Sparkles, ArrowRight, Mic, Settings } from 'lucide-react'
 import Link from 'next/link'
 
 function getGreeting() {
@@ -11,42 +11,12 @@ function getGreeting() {
 }
 
 function formatDate() {
-  return new Date().toLocaleDateString('en-US', {
+  return new Date().toLocaleDateString('en-GB', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
   })
 }
-
-const mockMatches = [
-  {
-    id: '1',
-    name: 'Sarah',
-    age: 42,
-    compatibility: 94,
-    bio: 'Loves hiking, cooking Italian food, and weekend farmers markets.',
-    compatibilityNote: 'You both value quality time and outdoor adventures',
-    photoColor: 'from-rose-200 to-pink-300',
-  },
-  {
-    id: '2',
-    name: 'Michael',
-    age: 48,
-    compatibility: 88,
-    bio: 'Jazz enthusiast, amateur photographer, dog dad to a golden retriever.',
-    compatibilityNote: 'Shared love of music and creative expression',
-    photoColor: 'from-amber-200 to-orange-300',
-  },
-  {
-    id: '3',
-    name: 'Elena',
-    age: 39,
-    compatibility: 91,
-    bio: 'Yoga instructor who loves travel, art museums, and great conversations.',
-    compatibilityNote: 'Both seek meaningful connection and mindful living',
-    photoColor: 'from-purple-200 to-violet-300',
-  },
-]
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -54,110 +24,124 @@ export default async function HomePage() {
 
   if (!user) redirect('/login')
 
-  // Fetch user profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const { data: userData } = await supabase
+    .from('users').select('*').eq('id', user.id).single()
 
-  const firstName = profile?.first_name || user.email?.split('@')[0] || 'there'
-  const profileCompletion = profile?.completion_percentage || 45
-  const showCompletionCard = profileCompletion < 80
+  const { data: profileData } = await supabase
+    .from('user_profiles').select('*').eq('user_id', user.id).single()
+
+  const firstName = userData?.name?.split(' ')[0]
+    || user.email?.split('@')[0]
+    || 'there'
+
+  const completeness = profileData?.profile_completion_score ?? 0
+  const MINIMUM_COMPLETENESS = 40
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white px-5 pt-12 pb-5 shadow-sm">
-        <p className="text-sm text-gray-500 mb-0.5">{formatDate()}</p>
-        <h1 className="text-2xl font-bold text-gray-900">
-          {getGreeting()},{' '}
-          <span className="text-primary capitalize">{firstName}</span> 👋
-        </h1>
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm text-gray-400 mb-0.5">{formatDate()}</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {getGreeting()},{' '}
+              <span className="text-primary capitalize">{firstName}</span>
+            </h1>
+          </div>
+          <Link href="/settings" className="p-2 -mr-1 rounded-full hover:bg-gray-100 transition-colors">
+            <Settings size={20} className="text-gray-400" />
+          </Link>
+        </div>
       </div>
 
-      <div className="px-4 py-5 space-y-6">
-        {/* Profile completion card */}
-        {showCompletionCard && (
-          <Link href="/profile">
-            <div className="bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 rounded-2xl p-4 flex items-center gap-4">
-              <div className="bg-primary/10 rounded-full p-3">
-                <Camera size={22} className="text-primary" />
+      <div className="px-4 py-5 space-y-5">
+
+        {/* Profile completeness / chat prompt */}
+        {completeness < MINIMUM_COMPLETENESS ? (
+          <Link href="/chat">
+            <div className="gradient-warm border border-primary/20 rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Mic size={20} className="text-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800 text-sm">Complete your profile</p>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {profileCompletion}% done — add more to get better matches
+                <p className="font-semibold text-gray-800 text-sm">
+                  {completeness === 0 ? 'Start talking to Sage' : 'Continue chatting with Sage'}
                 </p>
-                <div className="mt-2 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    className="bg-primary h-1.5 rounded-full transition-all"
-                    style={{ width: `${profileCompletion}%` }}
-                  />
-                </div>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {completeness === 0
+                    ? 'A few conversations will unlock your matches'
+                    : `${completeness}% complete — ${MINIMUM_COMPLETENESS - completeness}% more unlocks matches`}
+                </p>
+                {completeness > 0 && (
+                  <div className="mt-2 bg-white rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="bg-primary h-1.5 rounded-full transition-all"
+                      style={{ width: `${completeness}%` }}
+                    />
+                  </div>
+                )}
+              </div>
+              <ArrowRight size={18} className="text-gray-400 shrink-0" />
+            </div>
+          </Link>
+        ) : (
+          <Link href="/matches">
+            <div className="bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Heart size={20} className="text-primary fill-primary/30" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-gray-800 text-sm">Your matches are ready</p>
+                <p className="text-xs text-gray-500 mt-0.5">Sage has found people worth meeting</p>
               </div>
               <ArrowRight size={18} className="text-gray-400 shrink-0" />
             </div>
           </Link>
         )}
 
-        {/* Today's Matches */}
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Heart size={18} className="text-primary fill-primary" />
-              Today's Matches
-            </h2>
-            <Link href="/matches" className="text-sm text-primary font-medium">
-              See all
-            </Link>
-          </div>
+        {/* Quick actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link href="/chat">
+            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-2 active:scale-95 transition-transform">
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mic size={18} className="text-primary" />
+              </div>
+              <p className="font-semibold text-gray-800 text-sm">Talk to Sage</p>
+              <p className="text-xs text-gray-400 leading-snug">Build your profile through conversation</p>
+            </div>
+          </Link>
+          <Link href="/profile">
+            <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col gap-2 active:scale-95 transition-transform">
+              <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center">
+                <Sparkles size={18} className="text-blue-500" />
+              </div>
+              <p className="font-semibold text-gray-800 text-sm">Your profile</p>
+              <p className="text-xs text-gray-400 leading-snug">See what Sage knows about you</p>
+            </div>
+          </Link>
+        </div>
 
-          <div className="space-y-3">
-            {mockMatches.map((match) => (
-              <Link key={match.id} href={`/matches/${match.id}`}>
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex gap-0">
-                  {/* Photo placeholder */}
-                  <div className={`w-24 shrink-0 bg-gradient-to-br ${match.photoColor} flex items-center justify-center`}>
-                    <span className="text-3xl font-bold text-white/80">
-                      {match.name[0]}
-                    </span>
-                  </div>
-                  {/* Info */}
-                  <div className="flex-1 p-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <span className="font-bold text-gray-900">{match.name}</span>
-                        <span className="text-gray-500 text-sm">, {match.age}</span>
-                      </div>
-                      <span className="shrink-0 bg-rose-50 text-primary text-xs font-bold px-2 py-0.5 rounded-full border border-rose-100">
-                        {match.compatibility}% match
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">{match.bio}</p>
-                    <p className="text-xs text-primary/80 mt-1.5 flex items-center gap-1">
-                      <Sparkles size={11} className="shrink-0" />
-                      {match.compatibilityNote}
-                    </p>
-                  </div>
-                </div>
-              </Link>
+        {/* How it works — shown when profile is new */}
+        {completeness < 20 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3">
+            <h3 className="font-semibold text-gray-800 text-sm">How Done Swiping works</h3>
+            {[
+              { step: '1', text: 'Talk to Sage — a few natural conversations, no forms' },
+              { step: '2', text: 'Sage builds your compatibility profile in the background' },
+              { step: '3', text: 'Get a small number of genuinely compatible matches' },
+              { step: '4', text: 'Chat first, share photos when you\'re ready' },
+            ].map(({ step, text }) => (
+              <div key={step} className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  {step}
+                </span>
+                <p className="text-xs text-gray-500 leading-relaxed">{text}</p>
+              </div>
             ))}
           </div>
-        </section>
+        )}
 
-        {/* Dating Insight */}
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-4">
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">💡</div>
-            <div>
-              <p className="text-sm font-semibold text-gray-800">Dating Insight</p>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                Profiles with 4+ photos get 3× more matches. Your genuine smile matters most!
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

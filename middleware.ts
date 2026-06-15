@@ -32,7 +32,15 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  const publicPaths = ['/', '/login', '/signup', '/auth-callback']
+  const publicPaths = [
+    '/',
+    '/login',
+    '/signup',
+    '/auth-callback',
+    '/offline',
+    '/manifest.webmanifest',
+    '/sw.js',
+  ]
   const isPublicPath = publicPaths.some(p => pathname === p || pathname.startsWith('/api/webhooks'))
 
   if (!user && !isPublicPath) {
@@ -41,7 +49,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  if (user && (pathname === '/login' || pathname === '/signup')) {
+  if (user && (pathname === '/' || pathname === '/login' || pathname === '/signup')) {
     const url = request.nextUrl.clone()
     url.pathname = '/home'
     return NextResponse.redirect(url)

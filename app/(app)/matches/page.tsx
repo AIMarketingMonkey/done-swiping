@@ -1,8 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Heart, Filter, Sparkles } from 'lucide-react'
+import { Heart, Filter, Sparkles, Mic, Lock } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+const MINIMUM_COMPLETENESS = 40
 
 type FilterTab = 'all' | 'new' | 'saved'
 
@@ -26,25 +29,79 @@ const mockMatches: Match[] = [
   { id: '6', name: 'James', age: 52, compatibility: 82, compatibilityNote: 'Deep conversations', photoColor: 'from-indigo-200 to-purple-300' },
 ]
 
+function LockedState({ completeness }: { completeness: number }) {
+  const router = useRouter()
+  const remaining = MINIMUM_COMPLETENESS - completeness
+
+  return (
+    <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
+      <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-5">
+        <Lock className="w-9 h-9 text-gray-300" />
+      </div>
+      <h2 className="text-xl font-bold text-gray-800 mb-2">Matches aren&apos;t ready yet</h2>
+      <p className="text-sm text-gray-500 leading-relaxed mb-6">
+        Sage needs to know you a little better before suggesting matches. Once your profile reaches {MINIMUM_COMPLETENESS}%, the right people will start appearing here.
+      </p>
+
+      {/* Completeness bar */}
+      <div className="w-full mb-6">
+        <div className="flex items-center justify-between mb-1.5 text-sm">
+          <span className="text-gray-500">{completeness > 0 ? `${completeness}% complete` : 'Not started yet'}</span>
+          <span className="text-gray-400">{MINIMUM_COMPLETENESS}% needed</span>
+        </div>
+        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+          <div
+            className="h-3 rounded-full bg-amber-400 transition-all duration-500"
+            style={{ width: `${completeness}%` }}
+          />
+        </div>
+        {completeness > 0 && (
+          <p className="text-xs text-gray-400 mt-1.5 text-right">
+            About {remaining}% more to go
+          </p>
+        )}
+      </div>
+
+      <button
+        onClick={() => router.push('/chat')}
+        className="flex items-center gap-2.5 bg-primary text-white px-8 py-4 rounded-2xl font-semibold shadow-md active:scale-95 transition-transform"
+      >
+        <Mic className="w-5 h-5" />
+        Chat with Sage
+      </button>
+      <p className="text-xs text-gray-400 mt-3">
+        A few more sessions is usually enough
+      </p>
+    </div>
+  )
+}
+
 export default function MatchesPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>('all')
   const [matches, setMatches] = useState<Match[]>([])
   const [loading, setLoading] = useState(true)
+  const [completeness, setCompleteness] = useState<number | null>(null)
 
   useEffect(() => {
-    // Simulate API call
-    const fetchMatches = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true)
-        // const res = await fetch('/api/matches')
-        // const data = await res.json()
-        await new Promise(r => setTimeout(r, 600))
-        setMatches(mockMatches)
+        // Fetch profile completeness
+        const profileRes = await fetch('/api/profile')
+        const profileData = await profileRes.json()
+        const score = profileData?.profile?.profile_completion_score ?? 0
+        setCompleteness(score)
+
+        if (score >= MINIMUM_COMPLETENESS) {
+          // TODO: replace with real API call when matches are implemented
+          await new Promise(r => setTimeout(r, 400))
+          setMatches(mockMatches)
+        }
       } finally {
         setLoading(false)
       }
     }
-    fetchMatches()
+    fetchData()
   }, [])
 
   const filtered = matches.filter(m => {
@@ -59,6 +116,32 @@ export default function MatchesPage() {
     { key: 'saved', label: 'Saved', count: matches.filter(m => m.isSaved).length },
   ]
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white px-5 pt-12 pb-4 shadow-sm">
+          <div className="skeleton h-7 w-40 rounded mb-4" />
+          <div className="flex gap-2">
+            {[1, 2, 3].map(i => <div key={i} className="skeleton h-9 flex-1 rounded-full" />)}
+          </div>
+        </div>
+        <div className="px-4 py-5 grid grid-cols-2 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
+              <div className="h-40 bg-gray-200" />
+              <div className="p-3 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-3/4" />
+                <div className="h-3 bg-gray-100 rounded w-full" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const isLocked = (completeness ?? 0) < MINIMUM_COMPLETENESS
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -68,63 +151,55 @@ export default function MatchesPage() {
             <Heart size={22} className="text-primary fill-primary" />
             Your Matches
           </h1>
-          <button className="p-2 rounded-full bg-gray-100 text-gray-500">
-            <Filter size={18} />
-          </button>
-        </div>
-
-        {/* Filter tabs */}
-        <div className="flex gap-2 mt-4">
-          {tabs.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
-                activeTab === tab.key
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-500'
-              }`}
-            >
-              {tab.label}
-              {tab.count !== undefined && tab.count > 0 && (
-                <span className={`ml-1.5 text-xs ${activeTab === tab.key ? 'text-white/80' : 'text-gray-400'}`}>
-                  {tab.count}
-                </span>
-              )}
+          {!isLocked && (
+            <button className="p-2 rounded-full bg-gray-100 text-gray-500">
+              <Filter size={18} />
             </button>
-          ))}
+          )}
         </div>
-      </div>
 
-      <div className="px-4 py-5">
-        {loading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm animate-pulse">
-                <div className="h-40 bg-gray-200" />
-                <div className="p-3 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 rounded w-full" />
-                </div>
-              </div>
+        {!isLocked && (
+          <div className="flex gap-2 mt-4">
+            {tabs.map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all ${
+                  activeTab === tab.key
+                    ? 'bg-primary text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-500'
+                }`}
+              >
+                {tab.label}
+                {tab.count !== undefined && tab.count > 0 && (
+                  <span className={`ml-1.5 text-xs ${activeTab === tab.key ? 'text-white/80' : 'text-gray-400'}`}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
             ))}
           </div>
-        ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="bg-rose-50 rounded-full p-6 mb-4">
-              <Heart size={40} className="text-primary/40" />
-            </div>
-            <h3 className="font-bold text-gray-700 text-lg mb-2">No matches here yet</h3>
-            <p className="text-gray-500 text-sm max-w-[200px]">
-              {activeTab === 'new' ? 'Check back soon for new matches!' : 'Save matches to find them here.'}
-            </p>
+        )}
+      </div>
+
+      {isLocked ? (
+        <LockedState completeness={completeness ?? 0} />
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center px-8">
+          <div className="bg-rose-50 rounded-full p-6 mb-4">
+            <Heart size={40} className="text-primary/40" />
           </div>
-        ) : (
+          <h3 className="font-bold text-gray-700 text-lg mb-2">No matches here yet</h3>
+          <p className="text-gray-500 text-sm max-w-[200px]">
+            {activeTab === 'new' ? 'Check back soon for new matches.' : 'Save matches to find them here.'}
+          </p>
+        </div>
+      ) : (
+        <div className="px-4 py-5">
           <div className="grid grid-cols-2 gap-3">
             {filtered.map(match => (
               <Link key={match.id} href={`/matches/${match.id}`}>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 active:scale-95 transition-transform">
-                  {/* Photo */}
                   <div className={`h-40 bg-gradient-to-br ${match.photoColor || 'from-rose-200 to-pink-300'} flex items-center justify-center relative`}>
                     <span className="text-5xl font-bold text-white/80">{match.name[0]}</span>
                     {match.isNew && (
@@ -133,7 +208,6 @@ export default function MatchesPage() {
                       </span>
                     )}
                   </div>
-                  {/* Info */}
                   <div className="p-3">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-bold text-gray-900 text-sm">{match.name}, {match.age}</span>
@@ -150,8 +224,8 @@ export default function MatchesPage() {
               </Link>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

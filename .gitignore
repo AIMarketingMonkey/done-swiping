@@ -1,5 +1,6 @@
 # Node.js
 node_modules/
+.pnpm-store/
 npm-debug.log
 yarn-error.log
 
@@ -36,3 +37,7 @@ package-lock.json
 # Environment files
 .env
 .env*.local
+
+# Local secrets and credentials
+Supabase Keys.txt
+*.credentials.json

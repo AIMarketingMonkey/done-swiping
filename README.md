@@ -1,25 +1,97 @@
-<div align="center">
-  <img src="https://storage.googleapis.com/hume-public-logos/hume/hume-banner.png">
-  <h1>EVI Next.js App Router Example</h1>
-</div>
+# Done Swiping
 
-![preview.png](preview.png)
+Done Swiping is a mobile-first, voice-first dating app. Sage learns about each
+user through natural speech-to-speech conversations, builds a compatibility
+profile over multiple sessions, and unlocks curated matches when the profile is
+complete enough to support reliable matching.
 
-## Overview
+## Architecture
 
-This project features a sample implementation of Hume's [Empathic Voice Interface](https://hume.docs.buildwithfern.com/docs/empathic-voice-interface-evi/overview) using Hume's React SDK. Here, we have a simple EVI that uses the Next.js App Router.
+- **Next.js 14** hosts the mobile web app and server routes.
+- **OpenAI Realtime API over WebRTC** provides low-latency, interruptible,
+  speech-to-speech conversations.
+- **Supabase** provides authentication, Postgres, row-level security, realtime
+  messaging, and storage.
+- **Supabase MCP** is an internal development tool for inspecting and managing
+  the Supabase project. It does not host or serve the customer application.
+- **Vercel** is the recommended public HTTPS host. HTTPS is required for
+  microphone access on mobile browsers.
 
-## Project deployment
+## Local development
 
-Click the button below to deploy this example project with Vercel:
+```powershell
+pnpm dev
+```
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fhumeai%2Fhume-evi-next-js-starter&env=HUME_API_KEY,HUME_SECRET_KEY)
+Open [http://localhost:3000](http://localhost:3000).
 
-Below are the steps to completing deployment:
+To expose the UI on the local network:
 
-1. Create a Git Repository for your project.
-2. Provide the required environment variables. To get your API key and Client Secret key, log into the portal and visit the [API keys page](https://beta.hume.ai/settings/keys).
+```powershell
+pnpm dev:mobile
+```
 
-## Support
+Then open `http://<computer-lan-ip>:3000` on a phone connected to the same
+network. Most mobile browsers will not grant microphone access on an insecure
+LAN URL, so use the HTTPS deployment for full voice testing.
 
-If you have questions, require assistance, or wish to engage in discussions pertaining to this starter template, [please reach out to us on Discord](https://link.hume.ai/discord).
+Next.js can also start an experimental local HTTPS server:
+
+```powershell
+pnpm dev:https
+```
+
+The generated certificate must be trusted by the phone before microphone access
+will work reliably.
+
+## Required environment variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+OPENAI_API_KEY
+NEXT_PUBLIC_APP_URL
+```
+
+`OPENAI_REALTIME_MODEL` is optional and defaults to `gpt-realtime-2`.
+
+Never expose `OPENAI_API_KEY` or `SUPABASE_SERVICE_ROLE_KEY` to browser code.
+
+## Realtime voice path
+
+The live conversation does not use the old sequential
+Whisper -> chat completion -> MP3 TTS path. The browser opens a WebRTC
+connection through `/api/ai/realtime/session`, then sends and receives audio
+continuously.
+
+- Sage speaks first.
+- Semantic voice activity detection controls turn-taking.
+- The user can interrupt Sage naturally.
+- Transcript persistence happens asynchronously and never blocks audio.
+- Profile extraction runs only after the conversation has ended.
+
+## Mobile installation
+
+The production build includes a web app manifest, icons, safe-area handling,
+and an offline screen. On the deployed HTTPS URL:
+
+- **iPhone:** Safari -> Share -> Add to Home Screen.
+- **Android:** Chrome -> menu -> Install app or Add to Home screen.
+
+## Supabase MCP
+
+Project-scoped, read-only MCP configuration is included for:
+
+- Claude/Cursor-compatible clients: `.mcp.json`
+- Codex: `.codex/config.toml`
+
+Authenticate through your MCP client's browser login flow. Keep manual approval
+enabled for MCP tool calls. Supabase recommends using MCP against development
+data rather than a production database containing real user information.
+
+## Production deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md).

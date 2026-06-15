@@ -159,7 +159,7 @@ import ApproveButton from "./ApproveButton";
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function ProfileReviewPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
     error,

@@ -106,6 +106,8 @@ CREATE TABLE IF NOT EXISTS public.structured_profiles (
   emotional_readiness TEXT,
   attachment_notes TEXT,
   sexual_compatibility_notes TEXT,
+  relationship_structure TEXT,
+  partner_awareness TEXT,
   matching_summary TEXT,
   embedding_vector vector(1536),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

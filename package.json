@@ -1,10 +1,12 @@
 {
-  "name": "hume-evi-next-js-starter",
+  "name": "done-swiping",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/humeai/hume-evi-next-js-starter",
+  "homepage": "https://github.com/AIMarketingMonkey/done-swiping",
   "scripts": {
     "dev": "next dev",
+    "dev:mobile": "next dev -H 0.0.0.0",
+    "dev:https": "next dev -H 0.0.0.0 --experimental-https",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
