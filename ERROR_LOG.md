@@ -2,11 +2,15 @@
 
 ## Incident summary
 
-**Date resolved:** 15 June 2026  
-**Affected area:** Sage voice conversation startup  
-**User-visible error:** `Could not connect to the realtime voice session`  
-**Status:** Resolved in production  
-**Final fix commit:** `dc744fb`  
+**Date resolved:** 15 June 2026
+
+**Affected area:** Sage voice conversation startup
+
+**User-visible error:** `Could not connect to the realtime voice session`
+
+**Status:** Resolved in production
+
+**Final fix commit:** `dc744fb`
 **Production URL:** `https://done-swiping.vercel.app`
 
 After microphone permission was granted, tapping the Sage orb failed before the
@@ -183,4 +187,3 @@ microphone authorization and successfully started the Sage voice session.
 - `lib/openai/client.ts`
 - `DEPLOYMENT.md`
 - `README.md`
-
