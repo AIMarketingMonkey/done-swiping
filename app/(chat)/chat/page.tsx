@@ -27,30 +27,6 @@ interface SessionSummary {
   completeness: number;
 }
 
-interface RealtimeSessionConfig {
-  type: "realtime";
-  model: string;
-  output_modalities: string[];
-  instructions: string;
-  audio: {
-    input: {
-      transcription: {
-        model: string;
-        language: string;
-      };
-      turn_detection: {
-        type: "semantic_vad";
-        eagerness: "high";
-        create_response: boolean;
-        interrupt_response: boolean;
-      };
-    };
-    output: {
-      voice: string;
-    };
-  };
-}
-
 interface RealtimeEvent {
   type: string;
   item_id?: string;
@@ -507,23 +483,11 @@ export default function RealtimeChatPage() {
 
       const channel = peer.createDataChannel("oai-events");
       channelRef.current = channel;
-      let sessionConfig: RealtimeSessionConfig | null = null;
       channel.onmessage = (message) => {
         handleRealtimeEvent(JSON.parse(message.data) as RealtimeEvent);
       };
       channel.onopen = () => {
         setState("thinking");
-        if (!sessionConfig) {
-          setState("error");
-          toast.error("The voice session configuration was not available.");
-          return;
-        }
-        channel.send(
-          JSON.stringify({
-            type: "session.update",
-            session: sessionConfig,
-          })
-        );
         channel.send(
           JSON.stringify({
             type: "response.create",
@@ -554,19 +518,16 @@ export default function RealtimeChatPage() {
       const {
         sdp,
         conversationId,
-        session,
       }: {
         sdp?: string;
         conversationId?: string;
-        session?: RealtimeSessionConfig;
       } = await response.json();
 
-      if (!sdp || !conversationId || !session) {
+      if (!sdp || !conversationId) {
         throw new Error("The realtime voice session was not configured.");
       }
 
       conversationIdRef.current = conversationId;
-      sessionConfig = session;
 
       await peer.setRemoteDescription({
         type: "answer",

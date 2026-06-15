@@ -100,16 +100,43 @@ ${
     .update(user.id)
     .digest("hex");
 
+  const session = {
+    type: "realtime",
+    model: REALTIME_MODEL,
+    output_modalities: ["audio"],
+    instructions,
+    audio: {
+      input: {
+        transcription: {
+          model: "gpt-4o-mini-transcribe",
+          language: "en",
+        },
+        turn_detection: {
+          type: "semantic_vad",
+          eagerness: "high",
+          create_response: true,
+          interrupt_response: true,
+        },
+      },
+      output: {
+        voice: "marin",
+      },
+    },
+  };
+
+  const formData = new FormData();
+  formData.set("sdp", sdp);
+  formData.set("session", JSON.stringify(session));
+
   const openAIResponse = await fetch(
-    `https://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`,
+    "https://api.openai.com/v1/realtime/calls",
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/sdp",
         "OpenAI-Safety-Identifier": safetyIdentifier,
       },
-      body: sdp,
+      body: formData,
       cache: "no-store",
     }
   );
@@ -134,29 +161,6 @@ ${
     {
       sdp: responseBody,
       conversationId: conversation.id,
-      session: {
-        type: "realtime",
-        model: REALTIME_MODEL,
-        output_modalities: ["audio"],
-        instructions,
-        audio: {
-          input: {
-            transcription: {
-              model: "gpt-4o-mini-transcribe",
-              language: "en",
-            },
-            turn_detection: {
-              type: "semantic_vad",
-              eagerness: "high",
-              create_response: true,
-              interrupt_response: true,
-            },
-          },
-          output: {
-            voice: "marin",
-          },
-        },
-      },
     },
     {
       headers: {

@@ -33,10 +33,10 @@ context for microphone access.
 ## 3. Configure OpenAI
 
 Keep `OPENAI_API_KEY` server-side. The authenticated Next.js route uses it to
-exchange the browser's SDP offer with OpenAI's GA `/v1/realtime` endpoint. The
-route returns only the SDP answer and the non-secret session configuration.
-After that one-time signalling request, speech audio flows over WebRTC rather
-than through the Next.js server.
+exchange the browser's SDP offer and Sage's session configuration with OpenAI's
+GA `/v1/realtime/calls` endpoint. The route returns only the SDP answer. After
+that one-time signalling request, speech audio flows over WebRTC rather than
+through the Next.js server.
 
 The default settings are tuned for conversation latency:
 
