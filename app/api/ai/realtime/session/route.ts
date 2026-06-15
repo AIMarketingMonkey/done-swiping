@@ -6,8 +6,13 @@ import { createClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const configuredRealtimeModel = process.env.OPENAI_REALTIME_MODEL?.trim();
 const REALTIME_MODEL =
-  process.env.OPENAI_REALTIME_MODEL ?? "gpt-realtime-2";
+  configuredRealtimeModel &&
+  !configuredRealtimeModel.includes("preview") &&
+  !configuredRealtimeModel.startsWith("gpt-4o-realtime")
+    ? configuredRealtimeModel
+    : "gpt-realtime-2";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -111,7 +116,10 @@ ${
 
   const responseBody = await openAIResponse.text();
   if (!openAIResponse.ok) {
-    console.error("Realtime SDP exchange failed:", responseBody);
+    console.error(
+      `Realtime SDP exchange failed for model ${REALTIME_MODEL}:`,
+      responseBody
+    );
     return NextResponse.json(
       {
         error: "Could not connect the realtime voice session",
