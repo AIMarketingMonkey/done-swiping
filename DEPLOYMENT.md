@@ -33,9 +33,10 @@ context for microphone access.
 ## 3. Configure OpenAI
 
 Keep `OPENAI_API_KEY` server-side. The authenticated Next.js route uses it to
-mint a short-lived Realtime client secret containing Sage's session
-configuration. The browser uses only that ephemeral secret to establish WebRTC
-directly with OpenAI's GA `/v1/realtime` endpoint.
+exchange the browser's SDP offer with OpenAI's GA `/v1/realtime` endpoint. The
+route returns only the SDP answer and the non-secret session configuration.
+After that one-time signalling request, speech audio flows over WebRTC rather
+than through the Next.js server.
 
 The default settings are tuned for conversation latency:
 

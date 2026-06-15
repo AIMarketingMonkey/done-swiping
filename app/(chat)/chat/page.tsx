@@ -27,6 +27,30 @@ interface SessionSummary {
   completeness: number;
 }
 
+interface RealtimeSessionConfig {
+  type: "realtime";
+  model: string;
+  output_modalities: string[];
+  instructions: string;
+  audio: {
+    input: {
+      transcription: {
+        model: string;
+        language: string;
+      };
+      turn_detection: {
+        type: "semantic_vad";
+        eagerness: "high";
+        create_response: boolean;
+        interrupt_response: boolean;
+      };
+    };
+    output: {
+      voice: string;
+    };
+  };
+}
+
 interface RealtimeEvent {
   type: string;
   item_id?: string;
@@ -483,11 +507,23 @@ export default function RealtimeChatPage() {
 
       const channel = peer.createDataChannel("oai-events");
       channelRef.current = channel;
+      let sessionConfig: RealtimeSessionConfig | null = null;
       channel.onmessage = (message) => {
         handleRealtimeEvent(JSON.parse(message.data) as RealtimeEvent);
       };
       channel.onopen = () => {
         setState("thinking");
+        if (!sessionConfig) {
+          setState("error");
+          toast.error("The voice session configuration was not available.");
+          return;
+        }
+        channel.send(
+          JSON.stringify({
+            type: "session.update",
+            session: sessionConfig,
+          })
+        );
         channel.send(
           JSON.stringify({
             type: "response.create",
@@ -503,43 +539,38 @@ export default function RealtimeChatPage() {
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
 
-      const tokenResponse = await fetch("/api/ai/realtime/session", {
+      const response = await fetch("/api/ai/realtime/session", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/sdp" },
+        body: offer.sdp,
       });
-      if (!tokenResponse.ok) {
-        throw new Error("Could not create the realtime voice session.");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.error ?? "Could not connect the realtime voice session."
+        );
       }
 
       const {
-        clientSecret,
+        sdp,
         conversationId,
-      }: { clientSecret?: string; conversationId?: string } =
-        await tokenResponse.json();
+        session,
+      }: {
+        sdp?: string;
+        conversationId?: string;
+        session?: RealtimeSessionConfig;
+      } = await response.json();
 
-      if (!clientSecret || !conversationId) {
+      if (!sdp || !conversationId || !session) {
         throw new Error("The realtime voice session was not configured.");
       }
 
       conversationIdRef.current = conversationId;
-
-      const response = await fetch("https://api.openai.com/v1/realtime", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${clientSecret}`,
-          "Content-Type": "application/sdp",
-        },
-        body: offer.sdp,
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("OpenAI Realtime connection failed:", errorText);
-        throw new Error("Could not connect the realtime voice session.");
-      }
+      sessionConfig = session;
 
       await peer.setRemoteDescription({
         type: "answer",
-        sdp: await response.text(),
+        sdp,
       });
     } catch (error) {
       stopConnection();

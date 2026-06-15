@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { SAGE_SYSTEM_PROMPT } from "@/lib/openai/client";
 import { createClient } from "@/lib/supabase/server";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 const REALTIME_MODEL =
   process.env.OPENAI_REALTIME_MODEL ?? "gpt-realtime-2";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -24,6 +24,11 @@ export async function POST() {
       { error: "OpenAI is not configured" },
       { status: 503 }
     );
+  }
+
+  const sdp = await request.text();
+  if (!sdp.trim()) {
+    return NextResponse.json({ error: "Missing SDP offer" }, { status: 400 });
   }
 
   const [userResult, profileResult, structuredResult] = await Promise.all([
@@ -67,11 +72,7 @@ export async function POST() {
     structured_profile: structuredResult.data ?? null,
   };
 
-  const session = {
-    type: "realtime",
-    model: REALTIME_MODEL,
-    output_modalities: ["audio"],
-    instructions: `${SAGE_SYSTEM_PROMPT}
+  const instructions = `${SAGE_SYSTEM_PROMPT}
 
 REALTIME VOICE BEHAVIOUR
 - This is a live, low-latency speech conversation. Respond as soon as the user has clearly finished.
@@ -88,65 +89,66 @@ ${
   hasProfile
     ? "Welcome the user back naturally, briefly mention one relevant thing already known, and continue getting to know them with one useful question."
     : "Introduce yourself as Sage, explain briefly that you learn about the user through relaxed voice conversations to build a compatibility profile, then ask their preferred name."
-}`,
-    audio: {
-      input: {
-        transcription: {
-          model: "gpt-4o-mini-transcribe",
-          language: "en",
-        },
-        turn_detection: {
-          type: "semantic_vad",
-          eagerness: "high",
-          create_response: true,
-          interrupt_response: true,
-        },
-      },
-      output: {
-        voice: "marin",
-      },
-    },
-  };
+}`;
 
   const safetyIdentifier = createHash("sha256")
     .update(user.id)
     .digest("hex");
 
   const openAIResponse = await fetch(
-    "https://api.openai.com/v1/realtime/client_secrets",
+    `https://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`,
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/sdp",
         "OpenAI-Safety-Identifier": safetyIdentifier,
       },
-      body: JSON.stringify({ session }),
+      body: sdp,
       cache: "no-store",
     }
   );
 
   const responseBody = await openAIResponse.text();
   if (!openAIResponse.ok) {
-    console.error("Realtime token creation failed:", responseBody);
+    console.error("Realtime SDP exchange failed:", responseBody);
     return NextResponse.json(
-      { error: "Could not start realtime voice session" },
+      {
+        error: "Could not connect the realtime voice session",
+        details:
+          process.env.NODE_ENV === "development" ? responseBody : undefined,
+      },
       { status: openAIResponse.status }
-    );
-  }
-
-  const token = JSON.parse(responseBody) as { value?: string };
-  if (!token.value) {
-    return NextResponse.json(
-      { error: "OpenAI did not return a realtime token" },
-      { status: 502 }
     );
   }
 
   return NextResponse.json(
     {
-      clientSecret: token.value,
+      sdp: responseBody,
       conversationId: conversation.id,
+      session: {
+        type: "realtime",
+        model: REALTIME_MODEL,
+        output_modalities: ["audio"],
+        instructions,
+        audio: {
+          input: {
+            transcription: {
+              model: "gpt-4o-mini-transcribe",
+              language: "en",
+            },
+            turn_detection: {
+              type: "semantic_vad",
+              eagerness: "high",
+              create_response: true,
+              interrupt_response: true,
+            },
+          },
+          output: {
+            voice: "marin",
+          },
+        },
+      },
     },
     {
       headers: {
