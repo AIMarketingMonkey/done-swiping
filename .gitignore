@@ -41,3 +41,5 @@ package-lock.json
 # Local secrets and credentials
 Supabase Keys.txt
 *.credentials.json
+
+.vercel

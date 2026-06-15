@@ -63,9 +63,9 @@ Never expose `OPENAI_API_KEY` or `SUPABASE_SERVICE_ROLE_KEY` to browser code.
 ## Realtime voice path
 
 The live conversation does not use the old sequential
-Whisper -> chat completion -> MP3 TTS path. The browser opens a WebRTC
-connection through `/api/ai/realtime/session`, then sends and receives audio
-continuously.
+Whisper -> chat completion -> MP3 TTS path. The browser requests an ephemeral
+client secret through `/api/ai/realtime/session`, then opens a direct WebRTC
+connection to OpenAI and sends and receives audio continuously.
 
 - Sage speaks first.
 - Semantic voice activity detection controls turn-taking.
