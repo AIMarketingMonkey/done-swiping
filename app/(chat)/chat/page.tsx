@@ -488,6 +488,7 @@ export default function RealtimeChatPage() {
       };
       channel.onopen = () => {
         setState("thinking");
+        channel.send(JSON.stringify({ type: "session.update", session: { voice: "vale" } }));
         channel.send(
           JSON.stringify({
             type: "response.create",
