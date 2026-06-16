@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 980" font-family="system-ui,-apple-system,sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#64748b"/></marker>
+    <marker id="arr-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3b82f6"/></marker>
+    <marker id="arr-o" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#f97316"/></marker>
+    <marker id="arr-g" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#22c55e"/></marker>
+    <marker id="arr-p" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#a855f7"/></marker>
+    <filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000015"/></filter>
+  </defs>
+  <rect width="1400" height="980" fill="#f8fafc"/>
+  <text x="700" y="44" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Done Swiping — System Architecture</text>
+  <text x="700" y="63" text-anchor="middle" font-size="12" fill="#64748b">Data connections · Storage · Process blocks</text>
+  <rect x="28" y="78" width="284" height="438" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="170" y="97" text-anchor="middle" font-size="10" font-weight="700" fill="#3b82f6" letter-spacing="1">USER DEVICE</text>
+  <rect x="338" y="78" width="384" height="438" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="530" y="97" text-anchor="middle" font-size="10" font-weight="700" fill="#16a34a" letter-spacing="1">VERCEL — NEXT.JS APP</text>
+  <rect x="748" y="78" width="304" height="438" rx="12" fill="#fef3c7" stroke="#fde68a" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="900" y="97" text-anchor="middle" font-size="10" font-weight="700" fill="#d97706" letter-spacing="1">OPENAI</text>
+  <rect x="1078" y="78" width="294" height="438" rx="12" fill="#fdf4ff" stroke="#e9d5ff" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="1225" y="97" text-anchor="middle" font-size="10" font-weight="700" fill="#9333ea" letter-spacing="1">SUPABASE</text>
+  <rect x="48" y="108" width="244" height="58" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="170" y="131" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Browser / PWA</text>
+  <text x="170" y="147" text-anchor="middle" font-size="10" fill="#64748b">Mobile-first · HTTPS · Installable</text>
+  <text x="170" y="160" text-anchor="middle" font-size="10" fill="#94a3b8">React (Next.js 14) · TypeScript</text>
+  <rect x="48" y="184" width="116" height="56" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="106" y="206" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Microphone</text>
+  <text x="106" y="221" text-anchor="middle" font-size="10" fill="#64748b">getUserMedia()</text>
+  <text x="106" y="234" text-anchor="middle" font-size="10" fill="#94a3b8">PCM audio stream</text>
+  <rect x="176" y="184" width="116" height="56" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="234" y="206" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Speaker</text>
+  <text x="234" y="221" text-anchor="middle" font-size="10" fill="#64748b">Audio element</text>
+  <text x="234" y="234" text-anchor="middle" font-size="10" fill="#94a3b8">Remote audio track</text>
+  <rect x="48" y="258" width="244" height="62" rx="10" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="170" y="280" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">RTCPeerConnection</text>
+  <text x="170" y="295" text-anchor="middle" font-size="10" fill="#1d4ed8">WebRTC audio + OAI DataChannel</text>
+  <text x="170" y="308" text-anchor="middle" font-size="10" fill="#64748b">semantic_vad · interruption enabled</text>
+  <rect x="48" y="338" width="244" height="56" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="170" y="360" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Transcript Display</text>
+  <text x="170" y="376" text-anchor="middle" font-size="10" fill="#64748b">Live streaming · Sage + User turns</text>
+  <text x="170" y="390" text-anchor="middle" font-size="10" fill="#94a3b8">Draft → finalised on response.done</text>
+  <rect x="48" y="412" width="244" height="56" rx="10" fill="#fff" stroke="#93c5fd" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="170" y="434" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Session End Overlay</text>
+  <text x="170" y="450" text-anchor="middle" font-size="10" fill="#64748b">Profile completeness % · Highlights</text>
+  <text x="170" y="463" text-anchor="middle" font-size="10" fill="#94a3b8">Talk again / Go home</text>
+  <rect x="358" y="108" width="204" height="58" rx="10" fill="#fff" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="460" y="130" text-anchor="middle" font-size="12" font-weight="600" fill="#15803d">Auth Middleware</text>
+  <text x="460" y="146" text-anchor="middle" font-size="10" fill="#64748b">Supabase JWT · Row-Level Security</text>
+  <text x="460" y="159" text-anchor="middle" font-size="10" fill="#94a3b8">Guards /api + /chat routes</text>
+  <rect x="358" y="184" width="204" height="76" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="460" y="204" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">POST /api/ai/realtime/session</text>
+  <text x="460" y="219" text-anchor="middle" font-size="10" fill="#166534">1. Authenticate user (Supabase)</text>
+  <text x="460" y="232" text-anchor="middle" font-size="10" fill="#166534">2. Load profile + prior context</text>
+  <text x="460" y="245" text-anchor="middle" font-size="10" fill="#166534">3. Create ai_conversations row</text>
+  <text x="460" y="253" text-anchor="middle" font-size="9" fill="#166534">4. Forward SDP → OpenAI /v1/realtime/calls</text>
+  <rect x="358" y="278" width="204" height="58" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="460" y="298" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">POST /api/ai/realtime/log</text>
+  <text x="460" y="313" text-anchor="middle" font-size="10" fill="#166534">Persist transcript turns async</text>
+  <text x="460" y="327" text-anchor="middle" font-size="10" fill="#94a3b8">ai_messages table (keepalive)</text>
+  <rect x="358" y="354" width="204" height="76" rx="10" fill="#dcfce7" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="460" y="374" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">POST /api/ai/extract-profile</text>
+  <text x="460" y="389" text-anchor="middle" font-size="10" fill="#166534">1. Await all pending log writes</text>
+  <text x="460" y="402" text-anchor="middle" font-size="10" fill="#166534">2. Read full transcript</text>
+  <text x="460" y="415" text-anchor="middle" font-size="10" fill="#166534">3. GPT-4o → JSON → merge + save</text>
+  <rect x="578" y="108" width="124" height="58" rx="10" fill="#fff" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="640" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#15803d">GET /api/matches</text>
+  <text x="640" y="146" text-anchor="middle" font-size="10" fill="#64748b">Compatibility scoring</text>
+  <text x="640" y="159" text-anchor="middle" font-size="10" fill="#94a3b8">Unlocks at 40%</text>
+  <rect x="578" y="184" width="124" height="58" rx="10" fill="#fff" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="640" y="206" text-anchor="middle" font-size="11" font-weight="600" fill="#15803d">GET/POST /messages</text>
+  <text x="640" y="221" text-anchor="middle" font-size="10" fill="#64748b">Matched-user messaging</text>
+  <text x="640" y="234" text-anchor="middle" font-size="10" fill="#94a3b8">Supabase realtime</text>
+  <rect x="578" y="260" width="124" height="58" rx="10" fill="#fff" stroke="#86efac" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="640" y="282" text-anchor="middle" font-size="11" font-weight="600" fill="#15803d">GET/PATCH /profile</text>
+  <text x="640" y="297" text-anchor="middle" font-size="10" fill="#64748b">Profile read / write</text>
+  <text x="640" y="310" text-anchor="middle" font-size="10" fill="#94a3b8">user_profiles table</text>
+  <rect x="766" y="108" width="268" height="82" rx="10" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="900" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">OpenAI Realtime API (GA)</text>
+  <text x="900" y="147" text-anchor="middle" font-size="10.5" fill="#78350f">POST /v1/realtime/calls</text>
+  <text x="900" y="162" text-anchor="middle" font-size="10" fill="#78350f">Model: gpt-realtime-2 · Voice: marin</text>
+  <text x="900" y="177" text-anchor="middle" font-size="10" fill="#92400e">Multipart FormData: sdp + session config</text>
+  <rect x="766" y="208" width="268" height="96" rx="10" fill="#fde68a" stroke="#fcd34d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="900" y="229" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">Sage (AI Persona)</text>
+  <text x="900" y="245" text-anchor="middle" font-size="10" fill="#78350f">SAGE_SYSTEM_PROMPT + profile context</text>
+  <text x="900" y="259" text-anchor="middle" font-size="10" fill="#78350f">speech-to-speech · duplex · hands-free</text>
+  <text x="900" y="273" text-anchor="middle" font-size="10" fill="#78350f">semantic_vad · eagerness: high</text>
+  <text x="900" y="287" text-anchor="middle" font-size="10" fill="#78350f">Transcription: gpt-4o-mini-transcribe</text>
+  <text x="900" y="297" text-anchor="middle" font-size="9" fill="#92400e">Speaks first · interruption supported</text>
+  <rect x="766" y="322" width="268" height="68" rx="10" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="900" y="344" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">GPT-4o (Chat Completion)</text>
+  <text x="900" y="360" text-anchor="middle" font-size="10" fill="#78350f">PROFILE_EXTRACTION_PROMPT</text>
+  <text x="900" y="374" text-anchor="middle" font-size="10" fill="#78350f">Transcript → 60-field JSON profile</text>
+  <text x="900" y="384" text-anchor="middle" font-size="9" fill="#92400e">profile_completeness 0-100 scored here</text>
+  <rect x="1096" y="108" width="258" height="60" rx="10" fill="#fff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1225" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="#7e22ce">Auth</text>
+  <text x="1225" y="146" text-anchor="middle" font-size="10" fill="#64748b">Email · Magic link · JWT</text>
+  <text x="1225" y="159" text-anchor="middle" font-size="10" fill="#94a3b8">Row-Level Security on all tables</text>
+  <rect x="1096" y="186" width="118" height="56" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1155" y="208" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">users</text>
+  <text x="1155" y="224" text-anchor="middle" font-size="10" fill="#64748b">id · name · email</text>
+  <text x="1155" y="237" text-anchor="middle" font-size="9" fill="#94a3b8">created_at</text>
+  <rect x="1236" y="186" width="118" height="56" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1295" y="208" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">user_profiles</text>
+  <text x="1295" y="224" text-anchor="middle" font-size="10" fill="#64748b">completion_score</text>
+  <text x="1295" y="237" text-anchor="middle" font-size="9" fill="#94a3b8">ai_summary</text>
+  <rect x="1096" y="260" width="118" height="60" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1155" y="281" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">ai_conversations</text>
+  <text x="1155" y="296" text-anchor="middle" font-size="10" fill="#64748b">id · user_id · type</text>
+  <text x="1155" y="311" text-anchor="middle" font-size="9" fill="#94a3b8">onboarding / refinement</text>
+  <rect x="1236" y="260" width="118" height="60" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1295" y="281" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">ai_messages</text>
+  <text x="1295" y="296" text-anchor="middle" font-size="10" fill="#64748b">role · message</text>
+  <text x="1295" y="311" text-anchor="middle" font-size="9" fill="#94a3b8">Full transcript store</text>
+  <rect x="1096" y="338" width="118" height="60" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1155" y="359" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">structured_profiles</text>
+  <text x="1155" y="374" text-anchor="middle" font-size="10" fill="#64748b">JSON profile (60 fields)</text>
+  <text x="1155" y="388" text-anchor="middle" font-size="9" fill="#94a3b8">Merged across sessions</text>
+  <rect x="1236" y="338" width="118" height="60" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1295" y="359" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">messages</text>
+  <text x="1295" y="374" text-anchor="middle" font-size="10" fill="#64748b">User ↔ match chat</text>
+  <text x="1295" y="388" text-anchor="middle" font-size="9" fill="#94a3b8">Realtime subscriptions</text>
+  <rect x="1096" y="416" width="258" height="44" rx="10" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="1225" y="436" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">Storage</text>
+  <text x="1225" y="451" text-anchor="middle" font-size="10" fill="#64748b">Photos — deferred until post-match</text>
+  <line x1="292" y1="137" x2="356" y2="137" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="170" y1="166" x2="170" y2="256" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr-b)"/>
+  <line x1="106" y1="240" x2="118" y2="258" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr-b)"/>
+  <line x1="234" y1="258" x2="234" y2="240" stroke="#f97316" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-o)"/>
+  <line x1="292" y1="280" x2="356" y2="240" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-b)"/>
+  <text x="315" y="256" font-size="9" fill="#3b82f6" transform="rotate(-22,315,256)">SDP offer</text>
+  <line x1="292" y1="300" x2="356" y2="300" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-g)"/>
+  <text x="308" y="295" font-size="9" fill="#22c55e">DC events</text>
+  <line x1="562" y1="225" x2="764" y2="155" stroke="#3b82f6" stroke-width="2" marker-end="url(#arr-b)"/>
+  <text x="640" y="180" font-size="9" fill="#3b82f6">SDP + session config</text>
+  <path d="M766,248 C680,260 460,280 292,295" stroke="#f97316" stroke-width="2" stroke-dasharray="7,3" fill="none" marker-end="url(#arr-o)"/>
+  <text x="530" y="256" font-size="9" fill="#ea580c">WebRTC audio P2P (bypasses Vercel)</text>
+  <line x1="562" y1="210" x2="1094" y2="148" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-p)"/>
+  <text x="800" y="168" font-size="9" fill="#9333ea">auth + profile context</text>
+  <line x1="562" y1="307" x2="1094" y2="296" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr-g)"/>
+  <text x="800" y="296" font-size="9" fill="#16a34a">persist transcript</text>
+  <line x1="562" y1="392" x2="764" y2="360" stroke="#a855f7" stroke-width="2" marker-end="url(#arr-p)"/>
+  <text x="640" y="365" font-size="9" fill="#9333ea">transcript</text>
+  <line x1="1034" y1="358" x2="1094" y2="368" stroke="#a855f7" stroke-width="2" marker-end="url(#arr-p)"/>
+  <text x="1050" y="356" font-size="9" fill="#9333ea">JSON profile</text>
+  <line x1="460" y1="260" x2="1094" y2="275" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-g)"/>
+  <rect x="28" y="538" width="630" height="90" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="343" y="557" text-anchor="middle" font-size="10" font-weight="700" fill="#475569" letter-spacing="1">CI / CD PIPELINE</text>
+  <rect x="48" y="564" width="174" height="46" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="135" y="583" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">GitHub</text>
+  <text x="135" y="599" text-anchor="middle" font-size="10" fill="#64748b">AIMarketingMonkey/done-swiping</text>
+  <line x1="222" y1="587" x2="242" y2="587" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="242" y="564" width="174" height="46" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="329" y="583" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">Vercel Deploy Hook</text>
+  <text x="329" y="599" text-anchor="middle" font-size="10" fill="#64748b">Push to main → auto deploy</text>
+  <line x1="416" y1="587" x2="436" y2="587" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="436" y="564" width="202" height="46" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="537" y="583" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">Env Variables (Vercel)</text>
+  <text x="537" y="599" text-anchor="middle" font-size="10" fill="#64748b">OPENAI_API_KEY · SUPABASE keys</text>
+  <rect x="680" y="538" width="692" height="200" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="1026" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">KEY DATA FLOWS</text>
+  <line x1="698" y1="580" x2="730" y2="580" stroke="#3b82f6" stroke-width="2.5" marker-end="url(#arr-b)"/>
+  <text x="738" y="584" font-size="11" font-weight="600" fill="#1e40af">1. Session Start (WebRTC SDP)</text>
+  <text x="738" y="598" font-size="10" fill="#475569">Browser SDP offer → /api/ai/realtime/session → OpenAI /v1/realtime/calls → SDP answer</text>
+  <line x1="698" y1="618" x2="730" y2="618" stroke="#f97316" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#arr-o)"/>
+  <text x="738" y="622" font-size="11" font-weight="600" fill="#c2410c">2. Live Audio (WebRTC P2P)</text>
+  <text x="738" y="636" font-size="10" fill="#475569">Microphone → RTCPeerConnection ↔ OpenAI Realtime → Speaker (bypasses Vercel entirely)</text>
+  <line x1="698" y1="656" x2="730" y2="656" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arr-g)"/>
+  <text x="738" y="660" font-size="11" font-weight="600" fill="#15803d">3. Transcript Persistence (async)</text>
+  <text x="738" y="674" font-size="10" fill="#475569">DataChannel events → /api/ai/realtime/log → ai_messages (Supabase, keepalive)</text>
+  <line x1="698" y1="694" x2="730" y2="694" stroke="#a855f7" stroke-width="2.5" marker-end="url(#arr-p)"/>
+  <text x="738" y="698" font-size="11" font-weight="600" fill="#7e22ce">4. Profile Extraction (post-session)</text>
+  <text x="738" y="712" font-size="10" fill="#475569">Session ends → /api/ai/extract-profile → GPT-4o → structured_profiles (merged, Supabase)</text>
+  <line x1="698" y1="732" x2="730" y2="732" stroke="#64748b" stroke-width="2.5" marker-end="url(#arr)"/>
+  <text x="738" y="736" font-size="11" font-weight="600" fill="#334155">5. Matching (unlocks at 40% completeness)</text>
+  <text x="738" y="750" font-size="10" fill="#475569">GET /api/matches reads structured_profiles · scores compatibility · returns curated matches</text>
+  <rect x="28" y="756" width="630" height="60" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1.5"/>
+  <text x="343" y="778" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">Session Constraints</text>
+  <text x="343" y="795" text-anchor="middle" font-size="10" fill="#78350f">15-minute session limit · Sage closes gracefully · profile extracted on end</text>
+  <text x="343" y="808" text-anchor="middle" font-size="10" fill="#78350f">User can say goodbye to end early · all transcript writes awaited before extraction</text>
+  <text x="700" y="958" text-anchor="middle" font-size="10" fill="#94a3b8">Done Swiping · voice-first dating app · June 2026 · github.com/AIMarketingMonkey/done-swiping</text>
+</svg>
